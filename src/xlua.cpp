@@ -155,12 +155,12 @@ void InitScripts(void)
 {
 	assert(g_modules.empty() && !plugin_base_path.empty());
 
-    struct script {
-        string m_path {};
-        string m_init_path {};
-        string m_script_path {};
-    };
-    vector<script> my_scripts;
+	struct script {
+		string m_path {};
+		string m_init_path {};
+		string m_script_path {};
+    	};
+    	vector<script> my_scripts;
 
 	string init_script_path(plugin_base_path);
 	init_script_path += "init.lua";
@@ -197,7 +197,7 @@ void InitScripts(void)
 			script_path += ".lua";
 
 			const script cur_script {mod_path,init_script_path,script_path};
-            my_scripts.push_back(cur_script);
+            		my_scripts.push_back(cur_script);
 		}
 
 		++offset;
@@ -205,9 +205,9 @@ void InitScripts(void)
 			break;
 	}
 
-    if (fcount) {
-        sort(my_scripts.begin(), my_scripts.end(),
-				[] (script const& a, script const& b){return a.m_path < b.m_path; });
+    	if (fcount) {
+        	sort(my_scripts.begin(), my_scripts.end(),
+			[] (script const& a, script const& b){return a.m_path < b.m_path; });
 
         for (auto& cur_script : my_scripts) {
              g_modules.push_back(new module(
