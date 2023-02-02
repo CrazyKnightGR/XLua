@@ -37,20 +37,11 @@ jobs:
           
   build-mac:
     runs-on: macos-11
-    env:
-      APPLE_ID: ${{ secrets.APPLE_ID }}
-      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
         with:
           submodules: yes
-      - name: Setup Credentials
-        uses: apple-actions/import-codesign-certs@v1
-        with: 
-          p12-file-base64: ${{ secrets.APPLE_DEV_CERTIFICATE }}
-          p12-password: ${{ secrets.APPLE_DEV_CERTIFICATE_PASSWORD }}
       - name: Build
         run: |
           ./jenkins_driver.sh
