@@ -5,6 +5,7 @@
 
 #define VERSION "1.2.0r1"
 
+#include <algorithm>
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
@@ -154,6 +155,13 @@ void InitScripts(void)
 {
 	assert(g_modules.empty() && !plugin_base_path.empty());
 
+	struct script {
+		string m_path {};
+		string m_init_path {};
+		string m_script_path {};
+    	};
+    	vector<script> my_scripts;
+
 	string init_script_path(plugin_base_path);
 	init_script_path += "init.lua";
 	string scripts_dir_path(plugin_base_path);
@@ -188,18 +196,28 @@ void InitScripts(void)
 			script_path += fptr;
 			script_path += ".lua";
 
-			g_modules.push_back(new module(
-				mod_path.c_str(),
-				init_script_path.c_str(),
-				script_path.c_str(),
-				lj_alloc_f,
-				NULL));
+			const script cur_script {mod_path,init_script_path,script_path};
+            		my_scripts.push_back(cur_script);
 		}
 
 		++offset;
 		if (offset == mf)
 			break;
 	}
+
+    	if (fcount) {
+        	sort(my_scripts.begin(), my_scripts.end(),
+			[] (script const& a, script const& b){return a.m_path < b.m_path; });
+
+        for (auto& cur_script : my_scripts) {
+             g_modules.push_back(new module(
+                    cur_script.m_path.c_str(),
+                    cur_script.m_init_path.c_str(),
+                    cur_script.m_script_path.c_str(),
+                    lj_alloc_f,
+                    NULL));
+        }
+    }
 }
 
 void CleanupScripts(void)
